@@ -1,2 +1,2 @@
 # starwars-app
-test react starwars with https://swapi.co/
+test react app with https://swapi.co/
