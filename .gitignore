@@ -1,0 +1,26 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+
+node_modules/
+.dist/
+.idea/
+
+.DS_Store
+*-secret.json
+*.xml
+*.iml
+.name
+*.orig
+npm-debug.log
+npm-debug.log*
+*scsslint_tmp*
++*_REMOTE_*.*
++*_BASE_*.*
++*_LOCAL_*.*
++*_BACKUP_*.*
+*.sublime-project
+*.sublime-workspace
+
+/.config.*.json
+
+package-lock.json
+# because it confusing us every time when packages was updated. just remove and install. that's it
