@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Route, NavLink } from 'react-router-dom';
+import { Route, Link, NavLink } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 import './App.less';
+import PageCharacters from '../PageCharacters/PageCharacters';
 
 
 
@@ -23,7 +24,7 @@ const App = () => (
     <Container>
       <Row>
         <Col xs={12} md={12}>
-          <Route exact path="/" component="Hello" />
+          <Route exact path="/" component={PageCharacters} />
         </Col>
       </Row>
     </Container>
