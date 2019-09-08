@@ -7,6 +7,22 @@ import './PageCharacters.less';
 
 
 
+
+
+const PageCharactersPagination = ({ currentPageNum = 1, pagesCount = 1, onPageClick = () => {} }) => {
+  const pageNumbers = new Array(pagesCount).fill(0).map((_, index) => index + 1, );
+
+  return (
+    <Pagination>
+      <Pagination.First onClick={onPageClick(1)} active={currentPageNum === 1} />
+      {pageNumbers.map((value) => (
+        <Pagination.Item key={value} active={value === currentPageNum} onClick={onPageClick(value)}>{value}</Pagination.Item>
+      ))}
+      <Pagination.Last onClick={onPageClick(pagesCount)} active={currentPageNum === pagesCount} />
+    </Pagination>
+  )
+};
+
 const PageCharactersTable = ({ items = [], onClickId }) => {
   return (
     <Table striped bordered hover>
@@ -57,6 +73,9 @@ const PageCharacters = () => {
     setCurrentPage(currentPage + 1); // TODO: for test request
   };
 
+  const pageCounts = paginationPageCounts(request.totalCount, request.items.length);
+  const setPaginationPage = (page) => () => setCurrentPage(page);
+
   return (
     <div>
       <div className="PageCharacters__head">
@@ -69,13 +88,9 @@ const PageCharacters = () => {
           </div>
 
           <div className="PageCharacters__pagination">
-            {hasPaginationPageCounts(request.totalCount, request.items.length)
+            {pageCounts
               ? (
-                <Pagination>
-                  <Pagination.First/>
-                  <Pagination.Item>{1}</Pagination.Item>
-                  <Pagination.Last/>
-                </Pagination>
+                <PageCharactersPagination currentPageNum={currentPage} pagesCount={pageCounts} onPageClick={setPaginationPage}/>
               ) : null}
           </div>
         </React.Fragment>
@@ -101,10 +116,12 @@ async function createRequest (page) {
 
 
 
-function hasPaginationPageCounts (totalCounts = 0, pageCounts = 0) {
+function paginationPageCounts (totalCounts = 0, pageCounts = 0) {
   if (!totalCounts || !pageCounts) {
     return 0;
   }
+
+  console.log(totalCounts);
 
   return Math.ceil(totalCounts/pageCounts);
 };
