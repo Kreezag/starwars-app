@@ -45,8 +45,12 @@ const PageListTable = ({ items = [], onClickId }) => {
               <td>{item.height}</td>
               <td>{item.mass}</td>
               <td>
-                <Link to={`/character/${getIdFromUrl(item.url)}`}>More information</Link>
-                {/*<Button variant="link" onClick={onClickId(getIdFromUrl(item.url))} size="sm">More information</Button>*/}
+                <Link
+                  to={{
+                    pathname: "/character/",
+                    search: `char=${getIdFromUrl(item.url)}`,
+                  }}
+                >More information</Link>
               </td>
             </tr>
           ))}
@@ -77,10 +81,6 @@ const PageList = () => {
     return () => (isSubscribed = false)
   }, [currentPage]);
 
-  const handleClickId = () => () => {
-    setCurrentPage(currentPage + 1); // TODO: for test request
-  };
-
   const pageCounts = paginationPageCounts(request.totalCount);
   const setPaginationPage = (page) => () => setCurrentPage(page);
 
@@ -92,7 +92,7 @@ const PageList = () => {
       {request.items.length ? (
         <React.Fragment>
           <div className="PageList__table">
-            <PageListTable items={request.items} onClickId={handleClickId}/>
+            <PageListTable items={request.items} />
           </div>
 
           <div className="PageList__pagination">
