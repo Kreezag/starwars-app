@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
-import Button from 'react-bootstrap/Button';
-import './PageCharacters.less';
+// import Button from 'react-bootstrap/Button';
+import { Route, Link, NavLink } from 'react-router-dom';
+import './PageList.less';
 
 
 
 const DEFAULT_COUNT_REQUEST_ITEMS = 10;
 
 
-const PageCharactersPagination = ({ currentPageNum = 1, pagesCount = 1, onPageClick = () => {} }) => {
+const PageListPagination = ({ currentPageNum = 1, pagesCount = 1, onPageClick = () => {} }) => {
   const pageNumbers = new Array(pagesCount).fill(0).map((_, index) => index + 1, );
 
   return (
@@ -21,7 +22,7 @@ const PageCharactersPagination = ({ currentPageNum = 1, pagesCount = 1, onPageCl
   )
 };
 
-const PageCharactersTable = ({ items = [], onClickId }) => {
+const PageListTable = ({ items = [], onClickId }) => {
   return (
     <Table striped bordered hover>
       <thead>
@@ -44,7 +45,8 @@ const PageCharactersTable = ({ items = [], onClickId }) => {
               <td>{item.height}</td>
               <td>{item.mass}</td>
               <td>
-                <Button variant="link" onClick={onClickId(getIdFromUrl(item.url))} size="sm">More information</Button>
+                <Link to={`/character/${getIdFromUrl(item.url)}`}>More information</Link>
+                {/*<Button variant="link" onClick={onClickId(getIdFromUrl(item.url))} size="sm">More information</Button>*/}
               </td>
             </tr>
           ))}
@@ -56,7 +58,7 @@ const PageCharactersTable = ({ items = [], onClickId }) => {
 
 
 
-const PageCharacters = () => {
+const PageList = () => {
   const [request, setRequestData] = useState({ totalCount: 0, items: [] });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -84,19 +86,19 @@ const PageCharacters = () => {
 
   return (
     <div>
-      <div className="PageCharacters__head">
+      <div className="PageList__head">
         List of Characters
       </div>
       {request.items.length ? (
         <React.Fragment>
-          <div className="PageCharacters__table">
-            <PageCharactersTable items={request.items} onClickId={handleClickId}/>
+          <div className="PageList__table">
+            <PageListTable items={request.items} onClickId={handleClickId}/>
           </div>
 
-          <div className="PageCharacters__pagination">
+          <div className="PageList__pagination">
             {pageCounts
               ? (
-                <PageCharactersPagination currentPageNum={currentPage} pagesCount={pageCounts} onPageClick={setPaginationPage}/>
+                <PageListPagination currentPageNum={currentPage} pagesCount={pageCounts} onPageClick={setPaginationPage}/>
               ) : null}
           </div>
         </React.Fragment>
@@ -140,4 +142,4 @@ function getIdFromUrl (swapiUrlString) {
 };
 
 
-export default PageCharacters;
+export default PageList;

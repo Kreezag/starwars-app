@@ -5,7 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 import './App.less';
-import PageCharacters from '../PageCharacters/PageCharacters';
+import PageList from '../PageList/PageList';
+import PageCharacter from '../PageCharacter/PageCharacter';
 
 
 
@@ -24,7 +25,8 @@ const App = () => (
     <Container>
       <Row>
         <Col xs={12} md={12}>
-          <Route exact path="/" component={PageCharacters} />
+          <Route exact path="/" component={PageList} />
+          <Route exact path="/character/" component={PageCharacter} />
         </Col>
       </Row>
     </Container>
