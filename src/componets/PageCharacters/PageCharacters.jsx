@@ -6,7 +6,7 @@ import './PageCharacters.less';
 
 
 
-
+const DEFAULT_COUNT_REQUEST_ITEMS = 10;
 
 
 const PageCharactersPagination = ({ currentPageNum = 1, pagesCount = 1, onPageClick = () => {} }) => {
@@ -14,11 +14,9 @@ const PageCharactersPagination = ({ currentPageNum = 1, pagesCount = 1, onPageCl
 
   return (
     <Pagination>
-      <Pagination.First onClick={onPageClick(1)} active={currentPageNum === 1} />
       {pageNumbers.map((value) => (
         <Pagination.Item key={value} active={value === currentPageNum} onClick={onPageClick(value)}>{value}</Pagination.Item>
       ))}
-      <Pagination.Last onClick={onPageClick(pagesCount)} active={currentPageNum === pagesCount} />
     </Pagination>
   )
 };
@@ -73,7 +71,7 @@ const PageCharacters = () => {
     setCurrentPage(currentPage + 1); // TODO: for test request
   };
 
-  const pageCounts = paginationPageCounts(request.totalCount, request.items.length);
+  const pageCounts = paginationPageCounts(request.totalCount);
   const setPaginationPage = (page) => () => setCurrentPage(page);
 
   return (
@@ -116,14 +114,12 @@ async function createRequest (page) {
 
 
 
-function paginationPageCounts (totalCounts = 0, pageCounts = 0) {
-  if (!totalCounts || !pageCounts) {
+function paginationPageCounts (totalCounts = 0) {
+  if (!totalCounts) {
     return 0;
   }
 
-  console.log(totalCounts);
-
-  return Math.ceil(totalCounts/pageCounts);
+  return Math.ceil(totalCounts/DEFAULT_COUNT_REQUEST_ITEMS);
 };
 
 
