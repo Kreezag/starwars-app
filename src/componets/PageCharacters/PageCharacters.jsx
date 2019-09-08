@@ -1,12 +1,8 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 import Button from 'react-bootstrap/Button';
-import PropTypes from 'prop-types';
-
 import './PageCharacters.less';
-
-import data from '../../testData/charactersList.json';
 
 
 
@@ -15,6 +11,21 @@ const getId = (swapiUrlString) => {
 
   return result[1];
 };
+
+
+const createRequest = async (page) => {
+  const request = new Request(`https://swapi.co/api/people/${page ? `?&page=${JSON.stringify(page)}`: ''}`, { method: 'GET' });
+
+  return fetch(request)
+    .then((response) => response.json())
+    .then((result) => ({
+      count: result.count,
+      items: result.results
+    }))
+};
+
+
+
 
 
 
@@ -31,7 +42,7 @@ const PageCharactersTable = ({ items = [], onClickId }) => {
         <th>more</th>
       </tr>
       </thead>
-      {items.length && (
+      {items.length ? (
         <tbody>
           {items.map((item) => (
             <tr key={item.url}>
@@ -46,7 +57,7 @@ const PageCharactersTable = ({ items = [], onClickId }) => {
             </tr>
           ))}
         </tbody>
-      )}
+      ) : null}
     </Table>
   )
 };
@@ -54,9 +65,18 @@ const PageCharactersTable = ({ items = [], onClickId }) => {
 
 
 const PageCharacters = () => {
+  const [request, setRequestData] = useState({ count: 0, items: [] });
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleClickId = (id) => () => {
-    console.log('handleClickId', id);
+  useEffect(() => {
+    createRequest(currentPage)
+      .then((data) => {
+        return setRequestData(data)
+      })
+  }, [currentPage]);
+
+  const handleClickId = () => () => {
+    setCurrentPage(currentPage + 1); // TODO: for test request
   };
 
   return (
@@ -64,18 +84,21 @@ const PageCharacters = () => {
       <div className="PageCharacters__head">
         List of Characters
       </div>
-      <div className="PageCharacters__table">
-        <PageCharactersTable items={data.results} onClickId={handleClickId}/>
-      </div>
-      <div className="PageCharacters__pagination">
-        <Pagination>
-          <Pagination.First/>
-          <Pagination.Prev/>
-          <Pagination.Item>{1}</Pagination.Item>
-          <Pagination.Next/>
-          <Pagination.Last/>
-        </Pagination>
-      </div>
+      {request.items.length ? (
+        <React.Fragment>
+          <div className="PageCharacters__table">
+            <PageCharactersTable items={request.items} onClickId={handleClickId}/>
+          </div>
+
+          <div className="PageCharacters__pagination">
+            <Pagination>
+              <Pagination.First/>
+              <Pagination.Item>{1}</Pagination.Item>
+              <Pagination.Last/>
+            </Pagination>
+          </div>
+        </React.Fragment>
+      ) : 'Loading'}
     </div>
   )
 };
