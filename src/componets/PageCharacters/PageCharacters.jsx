@@ -61,10 +61,18 @@ const PageCharacters = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    let isSubscribed = true;
     createRequest(currentPage)
       .then((data) => {
-        return setRequestData(data)
-      })
+        if (isSubscribed) {
+          console.log('data', data);
+          return setRequestData(data)
+        }
+
+        return null;
+      });
+
+    return () => (isSubscribed = false)
   }, [currentPage]);
 
   const handleClickId = () => () => {
