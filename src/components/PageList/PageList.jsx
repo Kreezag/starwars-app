@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
 // import Button from 'react-bootstrap/Button';
-import { Route, Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './PageList.less';
 
 
@@ -111,7 +111,13 @@ const PageList = () => {
 
 
 async function createRequest (page) {
-  const request = new Request(`https://swapi.co/api/people/${page ? `?&page=${JSON.stringify(page)}`: ''}`, { method: 'GET' });
+  let requestUrl = new URL('https://swapi.co/api/people/');
+
+  if (page) {
+    requestUrl.searchParams.set(page, JSON.stringify(page));
+  }
+
+  const request = new Request(requestUrl, { method: 'GET' });
 
   return fetch(request)
     .then((response) => response.json())
