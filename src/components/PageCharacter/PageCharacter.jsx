@@ -65,22 +65,30 @@ const PageCharacter = ({ location }) => {
                     <ListGroup.Item>
                       <b>Eye color:</b>&nbsp;{extendedPersonalData.eye_color}
                     </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Species:</b>&nbsp;
-                      {extendedPersonalData.species
-                        .map(el => el.name)
-                        .join(',')}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Homeworld:</b>&nbsp;
-                      {extendedPersonalData.homeworld.name}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <b>Starships:</b>&nbsp;
-                      {extendedPersonalData.starships
-                        .map(el => el.name)
-                        .join(',')}
-                    </ListGroup.Item>
+                    {Array.isArray(extendedPersonalData.species) &&
+                    extendedPersonalData.species.length > 0 ? (
+                      <ListGroup.Item>
+                        <b>Species:</b>&nbsp;
+                        {extendedPersonalData.species
+                          .map(el => el.name)
+                          .join(',')}
+                      </ListGroup.Item>
+                    ) : null}
+                    {extendedPersonalData.homeworld && (
+                      <ListGroup.Item>
+                        <b>Homeworld:</b>&nbsp;
+                        {extendedPersonalData.homeworld.name}
+                      </ListGroup.Item>
+                    )}
+                    {Array.isArray(extendedPersonalData.starships) &&
+                    extendedPersonalData.starships.length > 0 ? (
+                      <ListGroup.Item>
+                        <b>Starships:</b>&nbsp;
+                        {extendedPersonalData.starships
+                          .map(el => el.name)
+                          .join(',')}
+                      </ListGroup.Item>
+                    ) : null}
                   </ListGroup>
                 </Col>
 
@@ -94,25 +102,28 @@ const PageCharacter = ({ location }) => {
                         Films:{' '}
                       </div>
                     </ListGroup.Item>
-                    <ListGroup.Item>
-                      {extendedPersonalData.films.map((el, index) => (
-                        <div>
+                    {Array.isArray(extendedPersonalData.films) &&
+                    extendedPersonalData.films.length > 0 ? (
+                      <ListGroup.Item>
+                        {extendedPersonalData.films.map((el, index) => (
                           <div>
-                            <b>Name:</b> Episode {el.episode_id} {el.title}
+                            <div>
+                              <b>Name:</b> Episode {el.episode_id} {el.title}
+                            </div>
+                            <div>
+                              <b>Relise dete:</b> {el.release_date}
+                            </div>
+                            <div>
+                              <b>Opening:</b> {el.opening_crawl}
+                            </div>
+                            {index ===
+                            extendedPersonalData.films.length - 1 ? null : (
+                              <br />
+                            )}
                           </div>
-                          <div>
-                            <b>Relise dete:</b> {el.release_date}
-                          </div>
-                          <div>
-                            <b>Opening:</b> {el.opening_crawl}
-                          </div>
-                          {index ===
-                          extendedPersonalData.films.length - 1 ? null : (
-                            <br />
-                          )}
-                        </div>
-                      ))}
-                    </ListGroup.Item>
+                        ))}
+                      </ListGroup.Item>
+                    ) : null}
                   </ListGroup>
                 </Col>
               </Row>
