@@ -8,15 +8,15 @@ import './App.less';
 import PageList from '../PageList/PageList';
 import PageCharacter from '../PageCharacter/PageCharacter';
 
-
-
 const App = () => (
   <div className="App">
     <Navbar bg="dark" variant="dark">
       <Container>
         <Row>
           <Col xs={12} md={12}>
-            <NavLink className="Link nav-link App__navbar" to="/">StarWars Characters</NavLink>
+            <NavLink className="Link nav-link App__navbar" to="/">
+              StarWars Characters
+            </NavLink>
           </Col>
         </Row>
       </Container>
@@ -26,7 +26,7 @@ const App = () => (
       <Row>
         <Col xs={12} md={12}>
           <Route exact path="/" component={PageList} />
-          <Route path="/character" component={PageCharacter}/>
+          <Route path="/character" component={PageCharacter} />
         </Col>
       </Row>
     </Container>
