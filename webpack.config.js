@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: './src/index.jsx',
@@ -44,6 +45,10 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new UglifyJsPlugin({
+      sourceMap: true,
+      extractComments: 'all',
+    }),
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
