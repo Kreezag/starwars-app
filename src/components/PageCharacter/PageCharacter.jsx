@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import ListGroup from 'react-bootstrap/ListGroup';
 import './PageCharacter.less';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 const PageCharacter = ({ location }) => {
   const peopleId = String(location.pathname)
     .split('/')
     .pop();
 
-  const [extendedPersonalData, setExtendedPersonalData] = useState({});
+  const [extendedPersonalData, setExtendedPersonalData] = useState(null);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -23,9 +29,99 @@ const PageCharacter = ({ location }) => {
   }, [peopleId]);
 
   return (
-    <div className="PageCharacter__head">
-      Some Character
-      <div>{JSON.stringify(extendedPersonalData)}</div>
+    <div>
+      {extendedPersonalData ? (
+        <div className="PageCharacter__head">
+          <div>
+            <Link to={{ pathname: `/` }}>List of Characters</Link>&nbsp;/&nbsp;
+            {extendedPersonalData.name}
+          </div>
+          <Jumbotron className="PageCharacter__body">
+            <Container>
+              <Row>
+                <Col xs={6} md={6}>
+                  <ListGroup
+                    variant="flush"
+                    className="PageCharacter__bodyList"
+                  >
+                    <ListGroup.Item>
+                      <b>Name:</b>&nbsp;{extendedPersonalData.name}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Gender:</b>&nbsp;{extendedPersonalData.gender}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Height:</b>&nbsp;{extendedPersonalData.height}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Mass:</b>&nbsp;{extendedPersonalData.mass}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Hair color:</b>&nbsp;{extendedPersonalData.hair_color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Skin color:</b>&nbsp;{extendedPersonalData.skin_color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Eye color:</b>&nbsp;{extendedPersonalData.eye_color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Species:</b>&nbsp;
+                      {extendedPersonalData.species
+                        .map(el => el.name)
+                        .join(',')}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Homeworld:</b>&nbsp;
+                      {extendedPersonalData.homeworld.name}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Starships:</b>&nbsp;
+                      {extendedPersonalData.starships
+                        .map(el => el.name)
+                        .join(',')}
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Col>
+
+                <Col xs={6} md={6}>
+                  <ListGroup
+                    variant="flush"
+                    className="PageCharacter__bodyList"
+                  >
+                    <ListGroup.Item>
+                      <div className="PageCharacter__bodyFilmsHead">
+                        Films:{' '}
+                      </div>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      {extendedPersonalData.films.map((el, index) => (
+                        <div>
+                          <div>
+                            <b>Name:</b> Episode {el.episode_id} {el.title}
+                          </div>
+                          <div>
+                            <b>Relise dete:</b> {el.release_date}
+                          </div>
+                          <div>
+                            <b>Opening:</b> {el.opening_crawl}
+                          </div>
+                          {index ===
+                          extendedPersonalData.films.length - 1 ? null : (
+                            <br />
+                          )}
+                        </div>
+                      ))}
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Col>
+              </Row>
+            </Container>
+          </Jumbotron>
+        </div>
+      ) : (
+        'Loading...'
+      )}
     </div>
   );
 };
@@ -55,7 +151,7 @@ async function createExtendedPersonalDateRequest(peopleID) {
     const extendedRequestFieldsKeys = Object.keys(extendedRequestFields);
 
     return Promise.all(
-      extendedRequestFieldsKeys.map(key => extendedRequestFieldsKeys[key]),
+      extendedRequestFieldsKeys.map(key => extendedRequestFields[key]),
     )
       .then(results =>
         results.reduce(
@@ -66,9 +162,9 @@ async function createExtendedPersonalDateRequest(peopleID) {
           {},
         ),
       )
-      .then(additionalextendedPersonalData => ({
+      .then(additionalPersonalData => ({
         ...extendedPersonalData,
-        ...additionalextendedPersonalData,
+        ...additionalPersonalData,
       }));
   });
 }
