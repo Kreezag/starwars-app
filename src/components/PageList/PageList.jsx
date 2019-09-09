@@ -70,7 +70,6 @@ const PageList = () => {
     createRequest(currentPage)
       .then((data) => {
         if (isSubscribed) {
-          console.log('data', data);
           return setRequestData(data)
         }
 
@@ -113,7 +112,7 @@ async function createRequest (page) {
   let requestUrl = new URL('https://swapi.co/api/people/');
 
   if (page) {
-    requestUrl.searchParams.set(page, JSON.stringify(page));
+    requestUrl.searchParams.set('page', page);
   }
 
   const request = new Request(requestUrl, { method: 'GET' });
