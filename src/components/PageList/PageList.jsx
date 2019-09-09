@@ -110,7 +110,7 @@ const PageList = () => {
           </div>
         </React.Fragment>
       ) : (
-        'Loading'
+        'Loading...'
       )}
     </div>
   );
