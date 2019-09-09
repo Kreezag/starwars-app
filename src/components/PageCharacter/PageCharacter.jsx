@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import './PageCharacter.less';
 
-const PageCharacter = ({ location, ...params }) => {
+const PageCharacter = ({ location }) => {
   const peopleId = String(location.pathname)
     .split('/')
     .pop();
 
-  const [personalInfo, setPersonalInfo] = useState({});
+  const [extendedPersonalData, setExtendedPersonalData] = useState({});
 
   useEffect(() => {
     let isSubscribed = true;
 
-    createPersonalInfoRequest(peopleId).then(data => {
+    createExtendedPersonalDateRequest(peopleId).then(data => {
       if (isSubscribed) {
-        return setPersonalInfo(data);
+        return setExtendedPersonalData(data);
       }
 
       return null;
@@ -25,47 +25,55 @@ const PageCharacter = ({ location, ...params }) => {
   return (
     <div className="PageCharacter__head">
       Some Character
-      <div>{JSON.stringify(personalInfo)}</div>
+      <div>{JSON.stringify(extendedPersonalData)}</div>
     </div>
   );
 };
 
 export default PageCharacter;
 
-async function createPersonalInfoRequest(peopleID) {
+async function createExtendedPersonalDateRequest(peopleID) {
   let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
 
-  return createFetchRequest(requestUrl).then(personalInfo => {
-    const { films, starships, species, vehicles, homeworld } = personalInfo;
+  return createFetchRequest(requestUrl).then(extendedPersonalData => {
+    const {
+      films,
+      starships,
+      species,
+      vehicles,
+      homeworld,
+    } = extendedPersonalData;
 
-    let dataPeopleRequestArr = {};
+    let extendedRequestFields = {};
 
-    dataPeopleRequestArr.homeworld = createFetchRequest(homeworld);
-    dataPeopleRequestArr.films = mkRequestOfArrayUrls(films);
-    dataPeopleRequestArr.starships = mkRequestOfArrayUrls(starships);
-    dataPeopleRequestArr.species = mkRequestOfArrayUrls(species);
-    dataPeopleRequestArr.vehicles = mkRequestOfArrayUrls(vehicles);
+    extendedRequestFields.homeworld = createFetchRequest(homeworld);
+    extendedRequestFields.films = mkFetchRequestOfArrayUrls(films);
+    extendedRequestFields.starships = mkFetchRequestOfArrayUrls(starships);
+    extendedRequestFields.species = mkFetchRequestOfArrayUrls(species);
+    extendedRequestFields.vehicles = mkFetchRequestOfArrayUrls(vehicles);
 
-    const dataPeopleKeys = Object.keys(dataPeopleRequestArr);
+    const extendedRequestFieldsKeys = Object.keys(extendedRequestFields);
 
-    return Promise.all(dataPeopleKeys.map(key => dataPeopleRequestArr[key]))
+    return Promise.all(
+      extendedRequestFieldsKeys.map(key => extendedRequestFieldsKeys[key]),
+    )
       .then(results =>
         results.reduce(
           (object, result, index) => ({
             ...object,
-            [dataPeopleKeys[index]]: result,
+            [extendedRequestFieldsKeys[index]]: result,
           }),
           {},
         ),
       )
-      .then(additionalpersonalInfo => ({
-        ...personalInfo,
-        ...additionalpersonalInfo,
+      .then(additionalextendedPersonalData => ({
+        ...extendedPersonalData,
+        ...additionalextendedPersonalData,
       }));
   });
 }
 
-async function mkRequestOfArrayUrls(arr) {
+async function mkFetchRequestOfArrayUrls(arr) {
   if (Array.isArray(arr) && arr.length) {
     const promisesArr = arr.reduce(
       (prev, el) => [...prev, createFetchRequest(el)],
