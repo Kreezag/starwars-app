@@ -6,6 +6,7 @@ import './PageCharacter.less';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Alert from 'react-bootstrap/Alert';
 
 const PageCharacter = ({ location }) => {
   const peopleId = String(location.pathname)
@@ -13,16 +14,25 @@ const PageCharacter = ({ location }) => {
     .pop();
 
   const [extendedPersonalData, setExtendedPersonalData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isSubscribed = true;
 
-    createExtendedPersonalDateRequest(peopleId).then(data => {
+    createExtendedPersonalDateRequest(peopleId)
+      .then(data => {
       if (isSubscribed) {
+        setError(null);
+
         return setExtendedPersonalData(data);
       }
 
       return null;
+    })
+    .catch((err => {
+      if (isSubscribed) {
+        return setError(err);
+      }
     });
 
     return () => (isSubscribed = false);
@@ -36,7 +46,12 @@ const PageCharacter = ({ location }) => {
           {extendedPersonalData ? extendedPersonalData.name : '...'}
         </div>
       </div>
-      {extendedPersonalData ? (
+      {error ? (
+        <Alert variant='danger' className="PageCharacter__error">
+          {JSON.stringify(error)}
+        </Alert>
+      ) : null}
+      {extendedPersonalData && !error ? (
         <Jumbotron className="PageCharacter__body">
           <Container>
             <Row>

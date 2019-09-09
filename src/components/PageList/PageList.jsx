@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Pagination from 'react-bootstrap/Pagination';
-// import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
 import './PageList.less';
 
 const DEFAULT_COUNT_REQUEST_ITEMS = 10;
@@ -73,16 +73,23 @@ const PageListTable = ({ items = [] }) => {
 const PageList = () => {
   const [request, setRequestData] = useState({ totalCount: 0, items: [] });
   const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let isSubscribed = true;
-    createRequest(currentPage).then(data => {
-      if (isSubscribed) {
-        return setRequestData(data);
-      }
+    createRequest(currentPage)
+      .then(data => {
+        if (isSubscribed) {
+          return setRequestData(data);
+        }
 
-      return null;
-    });
+        return null;
+      })
+      .catch(err => {
+        if (isSubscribed) {
+          return setError(err);
+        }
+      });
 
     return () => (isSubscribed = false);
   }, [currentPage]);
@@ -93,6 +100,12 @@ const PageList = () => {
   return (
     <div>
       <div className="PageList__head">List of Characters</div>
+      {error ? (
+        <Alert variant="danger" className="PageList__error">
+          {JSON.stringify(error)}
+        </Alert>
+      ) : null}
+
       {request.items.length ? (
         <React.Fragment>
           <div className="PageList__table">
