@@ -47,8 +47,7 @@ const PageListTable = ({ items = [], onClickId }) => {
               <td>
                 <Link
                   to={{
-                    pathname: "/character/",
-                    search: `char=${getIdFromUrl(item.url)}`,
+                    pathname: `/character/${getIdFromUrl(item.url)}`,
                   }}
                 >More information</Link>
               </td>
@@ -142,7 +141,7 @@ function paginationPageCounts (totalCounts = 0) {
 
 
 function getIdFromUrl (swapiUrlString) {
-  const result = swapiUrlString.match('/(?:\\D*\/)(\\d*)/');
+  const result = swapiUrlString.match('/(?:\\D*\/)(\\d+)/');
 
   return result[1];
 };
