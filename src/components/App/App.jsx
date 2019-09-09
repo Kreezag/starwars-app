@@ -26,7 +26,7 @@ const App = () => (
       <Row>
         <Col xs={12} md={12}>
           <Route exact path="/" component={PageList} />
-          <Route exact path="/character" component={PageCharacter}/>
+          <Route path="/character" component={PageCharacter}/>
         </Col>
       </Row>
     </Container>
