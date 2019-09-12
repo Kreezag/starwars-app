@@ -113,7 +113,7 @@ const PageCharacter = ({ location }) => {
                   {Array.isArray(extendedPersonalData.films) &&
                   extendedPersonalData.films.length > 0
                     ? extendedPersonalData.films.map((el, index) => (
-                        <ListGroup.Item key={el.link}>
+                        <ListGroup.Item key={el.url}>
                           <div>
                             <b>Name:</b> Episode {el.episode_id} {el.title}
                           </div>
