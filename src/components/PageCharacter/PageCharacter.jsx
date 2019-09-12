@@ -33,7 +33,7 @@ const PageCharacter = ({ location }) => {
       if (isSubscribed) {
         return setError(err);
       }
-    });
+    }));
 
     return () => (isSubscribed = false);
   }, [peopleId]);
@@ -113,7 +113,7 @@ const PageCharacter = ({ location }) => {
                   {Array.isArray(extendedPersonalData.films) &&
                   extendedPersonalData.films.length > 0
                     ? extendedPersonalData.films.map((el, index) => (
-                        <ListGroup.Item>
+                        <ListGroup.Item key={el.link}>
                           <div>
                             <b>Name:</b> Episode {el.episode_id} {el.title}
                           </div>
