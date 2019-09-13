@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
-import './PageCharacter.less';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
+import PageHeader from '../../ui/PageHeader';
+import './PageCharacterInfo.less';
 
-const PageCharacter = ({ location }) => {
+const PageCharacterInfo = ({ location }) => {
   const peopleId = String(location.pathname)
     .split('/')
     .pop();
@@ -21,42 +22,43 @@ const PageCharacter = ({ location }) => {
 
     createExtendedPersonalDateRequest(peopleId)
       .then(data => {
-      if (isSubscribed) {
-        setError(null);
+        if (isSubscribed) {
+          setError(null);
 
-        return setExtendedPersonalData(data);
-      }
+          return setExtendedPersonalData(data);
+        }
 
-      return null;
-    })
-    .catch((err => {
-      if (isSubscribed) {
-        return setError(err);
-      }
-    }));
+        return null;
+      })
+      .catch(err => {
+        if (isSubscribed) {
+          return setError(err);
+        }
+      });
 
     return () => (isSubscribed = false);
   }, [peopleId]);
 
   return (
     <div>
-      <div className="PageCharacter__head">
-        <div>
-          <Link to={{ pathname: `/` }}>List of Characters</Link>&nbsp;/&nbsp;
-          {extendedPersonalData ? extendedPersonalData.name : '...'}
-        </div>
-      </div>
+      <PageHeader>
+        <Link to={{ pathname: `/` }}>List of Characters</Link>&nbsp;/&nbsp;
+        {extendedPersonalData ? extendedPersonalData.name : '...'}
+      </PageHeader>
       {error ? (
-        <Alert variant='danger' className="PageCharacter__error">
+        <Alert variant="danger" className="PageCharacterInfo__error">
           {JSON.stringify(error)}
         </Alert>
       ) : null}
       {extendedPersonalData && !error ? (
-        <Jumbotron className="PageCharacter__body">
+        <Jumbotron className="PageCharacterInfo__body">
           <Container>
             <Row>
               <Col xs={6} md={6}>
-                <ListGroup variant="flush" className="PageCharacter__bodyList">
+                <ListGroup
+                  variant="flush"
+                  className="PageCharacterInfo__bodyList"
+                >
                   <ListGroup.Item>
                     <b>Name:</b>&nbsp;{extendedPersonalData.name}
                   </ListGroup.Item>
@@ -106,22 +108,27 @@ const PageCharacter = ({ location }) => {
               </Col>
 
               <Col xs={6} md={6}>
-                <ListGroup variant="flush" className="PageCharacter__bodyList">
+                <ListGroup
+                  variant="flush"
+                  className="PageCharacterInfo__bodyList"
+                >
                   <ListGroup.Item>
-                    <div className="PageCharacter__bodyFilmsHead">Films: </div>
+                    <div className="PageCharacterInfo__bodyFilmsHead">
+                      Films:{' '}
+                    </div>
                   </ListGroup.Item>
                   {Array.isArray(extendedPersonalData.films) &&
                   extendedPersonalData.films.length > 0
-                    ? extendedPersonalData.films.map((el, index) => (
-                        <ListGroup.Item key={el.url}>
+                    ? extendedPersonalData.films.map(({ url, title, release_date, openning_crawl, episode_id }, index) => (
+                        <ListGroup.Item key={url}>
                           <div>
-                            <b>Name:</b> Episode {el.episode_id} {el.title}
+                            <b>Name:</b> Episode {episode_id} {title}
                           </div>
                           <div>
-                            <b>Relise dete:</b> {el.release_date}
+                            <b>Relise dete:</b> {release_date}
                           </div>
                           <div>
-                            <b>Opening:</b> {el.opening_crawl}
+                            <b>Opening:</b> {opening_crawl}
                           </div>
                           {index ===
                           extendedPersonalData.films.length - 1 ? null : (
@@ -142,7 +149,7 @@ const PageCharacter = ({ location }) => {
   );
 };
 
-export default PageCharacter;
+export default PageCharacterInfo;
 
 async function createExtendedPersonalDateRequest(peopleID) {
   let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
