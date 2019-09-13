@@ -8,6 +8,7 @@ import Container from 'react-bootstrap/Container';
 import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
 import AlertError from '../../ui/AlertError';
+import LoadingWrapper from "../../ui/LoadingWrapper";
 
 const createFetchRequest = url => {
   return fetch(new Request(url, { method: 'GET' })).then(response =>
@@ -106,7 +107,7 @@ const PageCharacterInfo = ({ location }) => {
         {extendedPersonalData ? extendedPersonalData.name : '...'}
       </PageHeader>
       <AlertError>{error}</AlertError>
-      {extendedPersonalData && !error ? (
+      <LoadingWrapper isLoading={extendedPersonalData && !error}>
         <Jumbotron className="PageCharacterInfo__body">
           <Container>
             <Row>
@@ -176,43 +177,41 @@ const PageCharacterInfo = ({ location }) => {
                   {Array.isArray(extendedPersonalData.films) &&
                   extendedPersonalData.films.length > 0
                     ? extendedPersonalData.films.map(
-                        (
-                          {
-                            url,
-                            title,
-                            release_date,
-                            openning_crawl,
-                            episode_id,
-                            opening_crawl,
-                          },
-                          index,
-                        ) => (
-                          <ListGroup.Item key={url}>
-                            <div>
-                              <b>Name:</b> Episode {episode_id} {title}
-                            </div>
-                            <div>
-                              <b>Relise dete:</b> {release_date}
-                            </div>
-                            <div>
-                              <b>Opening:</b> {opening_crawl}
-                            </div>
-                            {index ===
-                            extendedPersonalData.films.length - 1 ? null : (
-                              <br />
-                            )}
-                          </ListGroup.Item>
-                        ),
-                      )
+                      (
+                        {
+                          url,
+                          title,
+                          release_date,
+                          openning_crawl,
+                          episode_id,
+                          opening_crawl,
+                        },
+                        index,
+                      ) => (
+                        <ListGroup.Item key={url}>
+                          <div>
+                            <b>Name:</b> Episode {episode_id} {title}
+                          </div>
+                          <div>
+                            <b>Relise dete:</b> {release_date}
+                          </div>
+                          <div>
+                            <b>Opening:</b> {opening_crawl}
+                          </div>
+                          {index ===
+                          extendedPersonalData.films.length - 1 ? null : (
+                            <br />
+                          )}
+                        </ListGroup.Item>
+                      ),
+                    )
                     : null}
                 </ListGroup>
               </Col>
             </Row>
           </Container>
         </Jumbotron>
-      ) : (
-        'Loading...'
-      )}
+      </LoadingWrapper>
     </div>
   );
 };

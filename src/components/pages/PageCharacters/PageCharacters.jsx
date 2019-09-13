@@ -3,6 +3,7 @@ import PageCharactersPagination from './PageCharactersPagination';
 import PageCharactersTable from './PageCharactersTable';
 import PageHeader from '../../ui/PageHeader';
 import AlertError from '../../ui/AlertError';
+import LoadingWrapper from '../../ui/LoadingWrapper';
 import './PageCharacters.less';
 
 const DEFAULT_COUNT_REQUEST_ITEMS = 10;
@@ -22,6 +23,7 @@ const PageCharacters = () => {
 
   useEffect(() => {
     let isSubscribed = true;
+
     createRequest(currentPage)
       .then(data => {
         if (isSubscribed) {
@@ -46,12 +48,9 @@ const PageCharacters = () => {
     <div className="PageCharacters">
       <PageHeader>List of Characters</PageHeader>
       <AlertError>{error}</AlertError>
-
-      {request.items.length ? (
+      <LoadingWrapper isLoading={request.items.length === 0}>
         <React.Fragment>
-          <div className="PageCharacters__table">
-            <PageCharactersTable items={request.items} />
-          </div>
+          <PageCharactersTable items={request.items} />
 
           <div className="PageCharacters__pagination">
             {pageCounts ? (
@@ -63,9 +62,7 @@ const PageCharacters = () => {
             ) : null}
           </div>
         </React.Fragment>
-      ) : (
-        'Loading...'
-      )}
+      </LoadingWrapper>
     </div>
   );
 };
