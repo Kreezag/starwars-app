@@ -9,6 +9,66 @@ import Alert from 'react-bootstrap/Alert';
 import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
 
+const createFetchRequest = url => {
+  return fetch(new Request(url, { method: 'GET' })).then(response =>
+    response.json(),
+  );
+};
+
+const mkFetchRequestOfArrayUrls = arr => {
+  if (Array.isArray(arr) && arr.length) {
+    const promisesArr = arr.reduce(
+      (prev, el) => [...prev, createFetchRequest(el)],
+      [],
+    );
+
+    return Promise.all(promisesArr);
+  }
+
+  return null;
+};
+
+const createExtendedPersonalDateRequest = peopleID => {
+  let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
+
+  return createFetchRequest(requestUrl).then(extendedPersonalData => {
+    const {
+      films,
+      starships,
+      species,
+      vehicles,
+      homeworld,
+    } = extendedPersonalData;
+
+    let extendedRequestFields = {};
+
+    extendedRequestFields.homeworld = createFetchRequest(homeworld);
+    extendedRequestFields.films = mkFetchRequestOfArrayUrls(films);
+    extendedRequestFields.starships = mkFetchRequestOfArrayUrls(starships);
+    extendedRequestFields.species = mkFetchRequestOfArrayUrls(species);
+    extendedRequestFields.vehicles = mkFetchRequestOfArrayUrls(vehicles);
+
+    const extendedRequestFieldsKeys = Object.keys(extendedRequestFields);
+
+    return Promise.all(
+      extendedRequestFieldsKeys.map(key => extendedRequestFields[key]),
+    )
+      .then(results =>
+        results.reduce(
+          (object, result, index) => ({
+            ...object,
+            [extendedRequestFieldsKeys[index]]: result,
+          }),
+          {},
+        ),
+      )
+      .then(additionalPersonalData => ({
+        ...extendedPersonalData,
+        ...additionalPersonalData,
+      }));
+  });
+};
+
 const PageCharacterInfo = ({ location }) => {
   const peopleId = String(location.pathname)
     .split('/')
@@ -119,23 +179,35 @@ const PageCharacterInfo = ({ location }) => {
                   </ListGroup.Item>
                   {Array.isArray(extendedPersonalData.films) &&
                   extendedPersonalData.films.length > 0
-                    ? extendedPersonalData.films.map(({ url, title, release_date, openning_crawl, episode_id }, index) => (
-                        <ListGroup.Item key={url}>
-                          <div>
-                            <b>Name:</b> Episode {episode_id} {title}
-                          </div>
-                          <div>
-                            <b>Relise dete:</b> {release_date}
-                          </div>
-                          <div>
-                            <b>Opening:</b> {opening_crawl}
-                          </div>
-                          {index ===
-                          extendedPersonalData.films.length - 1 ? null : (
-                            <br />
-                          )}
-                        </ListGroup.Item>
-                      ))
+                    ? extendedPersonalData.films.map(
+                        (
+                          {
+                            url,
+                            title,
+                            release_date,
+                            openning_crawl,
+                            episode_id,
+                            opening_crawl,
+                          },
+                          index,
+                        ) => (
+                          <ListGroup.Item key={url}>
+                            <div>
+                              <b>Name:</b> Episode {episode_id} {title}
+                            </div>
+                            <div>
+                              <b>Relise dete:</b> {release_date}
+                            </div>
+                            <div>
+                              <b>Opening:</b> {opening_crawl}
+                            </div>
+                            {index ===
+                            extendedPersonalData.films.length - 1 ? null : (
+                              <br />
+                            )}
+                          </ListGroup.Item>
+                        ),
+                      )
                     : null}
                 </ListGroup>
               </Col>
@@ -150,63 +222,3 @@ const PageCharacterInfo = ({ location }) => {
 };
 
 export default PageCharacterInfo;
-
-async function createExtendedPersonalDateRequest(peopleID) {
-  let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
-
-  return createFetchRequest(requestUrl).then(extendedPersonalData => {
-    const {
-      films,
-      starships,
-      species,
-      vehicles,
-      homeworld,
-    } = extendedPersonalData;
-
-    let extendedRequestFields = {};
-
-    extendedRequestFields.homeworld = createFetchRequest(homeworld);
-    extendedRequestFields.films = mkFetchRequestOfArrayUrls(films);
-    extendedRequestFields.starships = mkFetchRequestOfArrayUrls(starships);
-    extendedRequestFields.species = mkFetchRequestOfArrayUrls(species);
-    extendedRequestFields.vehicles = mkFetchRequestOfArrayUrls(vehicles);
-
-    const extendedRequestFieldsKeys = Object.keys(extendedRequestFields);
-
-    return Promise.all(
-      extendedRequestFieldsKeys.map(key => extendedRequestFields[key]),
-    )
-      .then(results =>
-        results.reduce(
-          (object, result, index) => ({
-            ...object,
-            [extendedRequestFieldsKeys[index]]: result,
-          }),
-          {},
-        ),
-      )
-      .then(additionalPersonalData => ({
-        ...extendedPersonalData,
-        ...additionalPersonalData,
-      }));
-  });
-}
-
-async function mkFetchRequestOfArrayUrls(arr) {
-  if (Array.isArray(arr) && arr.length) {
-    const promisesArr = arr.reduce(
-      (prev, el) => [...prev, createFetchRequest(el)],
-      [],
-    );
-
-    return Promise.all(promisesArr);
-  }
-
-  return null;
-}
-
-async function createFetchRequest(url) {
-  return fetch(new Request(url, { method: 'GET' })).then(response =>
-    response.json(),
-  );
-}
