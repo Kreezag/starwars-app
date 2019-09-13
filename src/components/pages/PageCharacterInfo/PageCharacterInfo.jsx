@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
 import AlertError from '../../ui/AlertError';
-import LoadingWrapper from "../../ui/LoadingWrapper";
+import LoadingWrapper from '../../ui/LoadingWrapper';
 
 const createFetchRequest = url => {
   return fetch(new Request(url, { method: 'GET' })).then(response =>
@@ -95,6 +95,8 @@ const PageCharacterInfo = ({ location }) => {
         if (isSubscribed) {
           return setError(err);
         }
+
+        return null;
       });
 
     return () => (isSubscribed = false);
@@ -107,109 +109,111 @@ const PageCharacterInfo = ({ location }) => {
         {extendedPersonalData ? extendedPersonalData.name : '...'}
       </PageHeader>
       <AlertError>{error}</AlertError>
-      <LoadingWrapper isLoading={extendedPersonalData && !error}>
+      <LoadingWrapper isLoading={!extendedPersonalData && !error}>
         <Jumbotron className="PageCharacterInfo__body">
-          <Container>
-            <Row>
-              <Col xs={6} md={6}>
-                <ListGroup
-                  variant="flush"
-                  className="PageCharacterInfo__bodyList"
-                >
-                  <ListGroup.Item>
-                    <b>Name:</b>&nbsp;{extendedPersonalData.name}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Gender:</b>&nbsp;{extendedPersonalData.gender}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Height:</b>&nbsp;{extendedPersonalData.height}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Mass:</b>&nbsp;{extendedPersonalData.mass}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Hair color:</b>&nbsp;{extendedPersonalData.hair_color}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Skin color:</b>&nbsp;{extendedPersonalData.skin_color}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <b>Eye color:</b>&nbsp;{extendedPersonalData.eye_color}
-                  </ListGroup.Item>
-                  {Array.isArray(extendedPersonalData.species) &&
-                  extendedPersonalData.species.length > 0 ? (
+          {extendedPersonalData ? (
+            <Container>
+              <Row>
+                <Col xs={6} md={6}>
+                  <ListGroup
+                    variant="flush"
+                    className="PageCharacterInfo__bodyList"
+                  >
                     <ListGroup.Item>
-                      <b>Species:</b>&nbsp;
-                      {extendedPersonalData.species
-                        .map(el => el.name)
-                        .join(',')}
+                      <b>Name:</b>&nbsp;{extendedPersonalData.name}
                     </ListGroup.Item>
-                  ) : null}
-                  {extendedPersonalData.homeworld && (
                     <ListGroup.Item>
-                      <b>Homeworld:</b>&nbsp;
-                      {extendedPersonalData.homeworld.name}
+                      <b>Gender:</b>&nbsp;{extendedPersonalData.gender}
                     </ListGroup.Item>
-                  )}
-                  {Array.isArray(extendedPersonalData.starships) &&
-                  extendedPersonalData.starships.length > 0 ? (
                     <ListGroup.Item>
-                      <b>Starships:</b>&nbsp;
-                      {extendedPersonalData.starships
-                        .map(el => el.name)
-                        .join(',')}
+                      <b>Height:</b>&nbsp;{extendedPersonalData.height}
                     </ListGroup.Item>
-                  ) : null}
-                </ListGroup>
-              </Col>
+                    <ListGroup.Item>
+                      <b>Mass:</b>&nbsp;{extendedPersonalData.mass}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Hair color:</b>&nbsp;{extendedPersonalData.hair_color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Skin color:</b>&nbsp;{extendedPersonalData.skin_color}
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <b>Eye color:</b>&nbsp;{extendedPersonalData.eye_color}
+                    </ListGroup.Item>
+                    {Array.isArray(extendedPersonalData.species) &&
+                    extendedPersonalData.species.length > 0 ? (
+                      <ListGroup.Item>
+                        <b>Species:</b>&nbsp;
+                        {extendedPersonalData.species
+                          .map(el => el.name)
+                          .join(',')}
+                      </ListGroup.Item>
+                    ) : null}
+                    {extendedPersonalData.homeworld && (
+                      <ListGroup.Item>
+                        <b>Homeworld:</b>&nbsp;
+                        {extendedPersonalData.homeworld.name}
+                      </ListGroup.Item>
+                    )}
+                    {Array.isArray(extendedPersonalData.starships) &&
+                    extendedPersonalData.starships.length > 0 ? (
+                      <ListGroup.Item>
+                        <b>Starships:</b>&nbsp;
+                        {extendedPersonalData.starships
+                          .map(el => el.name)
+                          .join(',')}
+                      </ListGroup.Item>
+                    ) : null}
+                  </ListGroup>
+                </Col>
 
-              <Col xs={6} md={6}>
-                <ListGroup
-                  variant="flush"
-                  className="PageCharacterInfo__bodyList"
-                >
-                  <ListGroup.Item>
-                    <div className="PageCharacterInfo__bodyFilmsHead">
-                      Films:{' '}
-                    </div>
-                  </ListGroup.Item>
-                  {Array.isArray(extendedPersonalData.films) &&
-                  extendedPersonalData.films.length > 0
-                    ? extendedPersonalData.films.map(
-                      (
-                        {
-                          url,
-                          title,
-                          release_date,
-                          openning_crawl,
-                          episode_id,
-                          opening_crawl,
-                        },
-                        index,
-                      ) => (
-                        <ListGroup.Item key={url}>
-                          <div>
-                            <b>Name:</b> Episode {episode_id} {title}
-                          </div>
-                          <div>
-                            <b>Relise dete:</b> {release_date}
-                          </div>
-                          <div>
-                            <b>Opening:</b> {opening_crawl}
-                          </div>
-                          {index ===
-                          extendedPersonalData.films.length - 1 ? null : (
-                            <br />
-                          )}
-                        </ListGroup.Item>
-                      ),
-                    )
-                    : null}
-                </ListGroup>
-              </Col>
-            </Row>
-          </Container>
+                <Col xs={6} md={6}>
+                  <ListGroup
+                    variant="flush"
+                    className="PageCharacterInfo__bodyList"
+                  >
+                    <ListGroup.Item>
+                      <div className="PageCharacterInfo__bodyFilmsHead">
+                        Films:{' '}
+                      </div>
+                    </ListGroup.Item>
+                    {Array.isArray(extendedPersonalData.films) &&
+                    extendedPersonalData.films.length > 0
+                      ? extendedPersonalData.films.map(
+                          (
+                            {
+                              url,
+                              title,
+                              release_date,
+                              openning_crawl,
+                              episode_id,
+                              opening_crawl,
+                            },
+                            index,
+                          ) => (
+                            <ListGroup.Item key={url}>
+                              <div>
+                                <b>Name:</b> Episode {episode_id} {title}
+                              </div>
+                              <div>
+                                <b>Relise dete:</b> {release_date}
+                              </div>
+                              <div>
+                                <b>Opening:</b> {opening_crawl}
+                              </div>
+                              {index ===
+                              extendedPersonalData.films.length - 1 ? null : (
+                                <br />
+                              )}
+                            </ListGroup.Item>
+                          ),
+                        )
+                      : null}
+                  </ListGroup>
+                </Col>
+              </Row>
+            </Container>
+          ) : null}
         </Jumbotron>
       </LoadingWrapper>
     </div>

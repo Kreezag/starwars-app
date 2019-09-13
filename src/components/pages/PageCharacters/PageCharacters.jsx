@@ -19,7 +19,7 @@ const paginationPageCounts = (totalCounts = 0) => {
 const PageCharacters = () => {
   const [request, setRequestData] = useState({ totalCount: 0, items: [] });
   const [currentPage, setCurrentPage] = useState(1);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -27,6 +27,8 @@ const PageCharacters = () => {
     createRequest(currentPage)
       .then(data => {
         if (isSubscribed) {
+          setError(null);
+
           return setRequestData(data);
         }
 
@@ -36,6 +38,8 @@ const PageCharacters = () => {
         if (isSubscribed) {
           return setError(err);
         }
+
+        return null;
       });
 
     return () => (isSubscribed = false);
