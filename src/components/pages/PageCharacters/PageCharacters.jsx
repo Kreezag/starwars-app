@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PageCharactersPagination from './PageCharactersPagination';
 import PageCharactersTable from './PageCharactersTable';
 import PageHeader from '../../ui/PageHeader';
-import Alert from 'react-bootstrap/Alert';
+import AlertError from '../../ui/AlertError';
 import './PageCharacters.less';
 
 const DEFAULT_COUNT_REQUEST_ITEMS = 10;
@@ -43,13 +43,9 @@ const PageCharacters = () => {
   const setPaginationPage = page => () => setCurrentPage(page);
 
   return (
-    <div>
+    <div className="PageCharacters">
       <PageHeader>List of Characters</PageHeader>
-      {error ? (
-        <Alert variant="danger" className="PageCharacters__error">
-          {JSON.stringify(error)}
-        </Alert>
-      ) : null}
+      <AlertError>{error}</AlertError>
 
       {request.items.length ? (
         <React.Fragment>

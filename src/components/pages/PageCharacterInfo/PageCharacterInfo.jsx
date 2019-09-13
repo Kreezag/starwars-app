@@ -5,9 +5,9 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert';
 import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
+import AlertError from '../../ui/AlertError';
 
 const createFetchRequest = url => {
   return fetch(new Request(url, { method: 'GET' })).then(response =>
@@ -100,16 +100,12 @@ const PageCharacterInfo = ({ location }) => {
   }, [peopleId]);
 
   return (
-    <div>
+    <div className="PageCharacterInfo">
       <PageHeader>
         <Link to={{ pathname: `/` }}>List of Characters</Link>&nbsp;/&nbsp;
         {extendedPersonalData ? extendedPersonalData.name : '...'}
       </PageHeader>
-      {error ? (
-        <Alert variant="danger" className="PageCharacterInfo__error">
-          {JSON.stringify(error)}
-        </Alert>
-      ) : null}
+      <AlertError>{error}</AlertError>
       {extendedPersonalData && !error ? (
         <Jumbotron className="PageCharacterInfo__body">
           <Container>
