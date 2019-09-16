@@ -33,7 +33,6 @@ const PageCharacters = () => {
 
     createPeoplePageRequest(currentPage)
       .then(data => {
-        console.log('data', data);
         if (isSubscribed) {
           setError(null);
 
