@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getPeopleIdRequest } from '../../../services/api';
 import { Link } from 'react-router-dom';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -29,10 +30,8 @@ const mkFetchRequestOfArrayUrls = arr => {
   return null;
 };
 
-const createExtendedPersonalDateRequest = peopleID => {
-  let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
-
-  return createFetchRequest(requestUrl).then(extendedPersonalData => {
+const createExtendedPersonalDateRequest = peopleID =>
+  getPeopleIdRequest(peopleID, {}).then(({ result: extendedPersonalData }) => {
     const {
       films,
       starships,
@@ -68,7 +67,6 @@ const createExtendedPersonalDateRequest = peopleID => {
         ...additionalPersonalData,
       }));
   });
-};
 
 const PageCharacterInfo = ({ location }) => {
   const peopleId = String(location.pathname)

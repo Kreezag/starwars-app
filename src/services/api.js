@@ -5,8 +5,15 @@ const mainResource = origin({
   transport: new TransportJSON(),
 });
 
-const peopleResource = mainResource.resource('/people/');
+const peopleResource = mainResource.resource('/people');
+const getPeople = peopleResource.request('GET');
+const getPeopleRequest = (params) => getPeople(params);
 
-export const getPeople = peopleResource.request('GET');
+const peopleIdResource = peopleId => peopleResource.subResource(`/${peopleId}`);
+const getPeopleId = (peopleId) => peopleIdResource(peopleId).request('GET');
+const getPeopleIdRequest = (peopleId, params) =>
+  getPeopleId(peopleId)(params);
 
-export const getPeopleRequest = params => getPeople(params);
+
+export { getPeopleRequest, getPeopleIdRequest };
+
