@@ -10,17 +10,14 @@ import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
 import AlertError from '../../ui/AlertError';
 import LoadingWrapper from '../../ui/LoadingWrapper';
+import { mkRequest } from '../../../api';
 
-const createFetchRequest = url => {
-  return fetch(new Request(url, { method: 'GET' })).then(response =>
-    response.json(),
-  );
-};
+
 
 const mkFetchRequestOfArrayUrls = arr => {
   if (Array.isArray(arr) && arr.length) {
     const promisesArr = arr.reduce(
-      (prev, el) => [...prev, createFetchRequest(el)],
+      (prev, url) => [...prev, mkRequest({ url }).get()],
       [],
     );
 
@@ -42,7 +39,7 @@ const createExtendedPersonalDateRequest = peopleID =>
 
     let extendedRequestFields = {};
 
-    extendedRequestFields.homeworld = createFetchRequest(homeworld);
+    extendedRequestFields.homeworld = mkRequest({ url: homeworld }).get();
     extendedRequestFields.films = mkFetchRequestOfArrayUrls(films);
     extendedRequestFields.starships = mkFetchRequestOfArrayUrls(starships);
     extendedRequestFields.species = mkFetchRequestOfArrayUrls(species);
