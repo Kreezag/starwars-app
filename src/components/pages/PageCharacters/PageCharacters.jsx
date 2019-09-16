@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getPeopleRequest } from '../../../services/api';
 import PageCharactersPagination from './PageCharactersPagination';
 import PageCharactersTable from './PageCharactersTable';
 import PageHeader from '../../ui/PageHeader';
@@ -16,6 +17,12 @@ const paginationPageCounts = (totalCounts = 0) => {
   return Math.ceil(totalCounts / DEFAULT_COUNT_REQUEST_ITEMS);
 };
 
+const createPeoplePageRequest = page =>
+  getPeopleRequest({ page }).then(({ result }) => ({
+    totalCount: result.count,
+    items: result.results,
+  }));
+
 const PageCharacters = () => {
   const [request, setRequestData] = useState({ totalCount: 0, items: [] });
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,8 +31,9 @@ const PageCharacters = () => {
   useEffect(() => {
     let isSubscribed = true;
 
-    createRequest(currentPage)
+    createPeoplePageRequest(currentPage)
       .then(data => {
+        console.log('data', data);
         if (isSubscribed) {
           setError(null);
 
@@ -71,20 +79,4 @@ const PageCharacters = () => {
   );
 };
 
-async function createRequest(page) {
-  let requestUrl = new URL('https://swapi.co/api/people/');
-
-  if (page) {
-    requestUrl.searchParams.set('page', page);
-  }
-
-  const request = new Request(requestUrl, { method: 'GET' });
-
-  return fetch(request)
-    .then(response => response.json())
-    .then(result => ({
-      totalCount: result.count,
-      items: result.results,
-    }));
-}
 export default PageCharacters;
