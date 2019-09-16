@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPeopleIdRequest } from '../../../services/api';
+import { getPeopleById } from '../../../api/people';
 import { Link } from 'react-router-dom';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -31,7 +31,7 @@ const mkFetchRequestOfArrayUrls = arr => {
 };
 
 const createExtendedPersonalDateRequest = peopleID =>
-  getPeopleIdRequest(peopleID, {}).then(({ result: extendedPersonalData }) => {
+  getPeopleById(peopleID, {}).then(({ result: extendedPersonalData }) => {
     const {
       films,
       starships,

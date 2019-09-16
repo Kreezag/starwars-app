@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPeopleRequest } from '../../../services/api';
+import { getPeople } from '../../../api/people';
 import PageCharactersPagination from './PageCharactersPagination';
 import PageCharactersTable from './PageCharactersTable';
 import PageHeader from '../../ui/PageHeader';
@@ -18,7 +18,7 @@ const paginationPageCounts = (totalCounts = 0) => {
 };
 
 const createPeoplePageRequest = page =>
-  getPeopleRequest({ page }).then(({ result }) => ({
+  getPeople({ page }).then(({ result }) => ({
     totalCount: result.count,
     items: result.results,
   }));
