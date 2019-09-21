@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getPeopleById } from '../../../api/people';
 import { Link } from 'react-router-dom';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -9,17 +10,14 @@ import PageHeader from '../../ui/PageHeader';
 import './PageCharacterInfo.less';
 import AlertError from '../../ui/AlertError';
 import LoadingWrapper from '../../ui/LoadingWrapper';
+import { mkRequest } from '../../../api';
 
-const createFetchRequest = url => {
-  return fetch(new Request(url, { method: 'GET' })).then(response =>
-    response.json(),
-  );
-};
+
 
 const mkFetchRequestOfArrayUrls = arr => {
   if (Array.isArray(arr) && arr.length) {
     const promisesArr = arr.reduce(
-      (prev, el) => [...prev, createFetchRequest(el)],
+      (prev, url) => [...prev, mkRequest({ url }).get()],
       [],
     );
 
@@ -29,10 +27,8 @@ const mkFetchRequestOfArrayUrls = arr => {
   return null;
 };
 
-const createExtendedPersonalDateRequest = peopleID => {
-  let requestUrl = new URL(peopleID, 'https://swapi.co/api/people/');
-
-  return createFetchRequest(requestUrl).then(extendedPersonalData => {
+const createExtendedPersonalDateRequest = peopleID =>
+  getPeopleById(peopleID, {}).then(({ result: extendedPersonalData }) => {
     const {
       films,
       starships,
@@ -43,7 +39,7 @@ const createExtendedPersonalDateRequest = peopleID => {
 
     let extendedRequestFields = {};
 
-    extendedRequestFields.homeworld = createFetchRequest(homeworld);
+    extendedRequestFields.homeworld = mkRequest({ url: homeworld }).get();
     extendedRequestFields.films = mkFetchRequestOfArrayUrls(films);
     extendedRequestFields.starships = mkFetchRequestOfArrayUrls(starships);
     extendedRequestFields.species = mkFetchRequestOfArrayUrls(species);
@@ -68,7 +64,6 @@ const createExtendedPersonalDateRequest = peopleID => {
         ...additionalPersonalData,
       }));
   });
-};
 
 const PageCharacterInfo = ({ location }) => {
   const peopleId = String(location.pathname)

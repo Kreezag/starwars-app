@@ -7,7 +7,7 @@ const PageCharactersPagination = ({
   pagesCount = 1,
   onPageClick = () => null,
 }) => {
-  const pageNumbers = new Array(pagesCount).map((_, index) => index + 1);
+  const pageNumbers = new Array(pagesCount).fill('').map((_, index) => index + 1);
 
   return (
     <Pagination>
